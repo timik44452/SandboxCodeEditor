@@ -88,11 +88,9 @@
       <DependentUpon>RendererBox.cs</DependentUpon>
     </Compile>
     <Compile Include="RendererContext.cs" />
-    <Compile Include="Renderer\Material.cs" />
     <Compile Include="Renderer\Pixel.cs" />
     <Compile Include="Renderer\Texture.cs" />
     <Compile Include="Service\PointerBuffer.cs" />
-    <Compile Include="Service\Serializator.cs" />
     <Compile Include="Widgets\CursoreWidget.cs" />
     <Compile Include="Widgets\CodeLineWidget.cs" />
     <Compile Include="Widgets\ModeWidget.cs" />
