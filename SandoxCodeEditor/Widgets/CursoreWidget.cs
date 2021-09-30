@@ -8,7 +8,7 @@ namespace SandboxCodeEditor.Widgets
     {
         private EditorController controller;
 
-        public CursoreWidget(EditorController controller) : base(0, 0, 2, controller.GetGlyphHeight())
+        public CursoreWidget(EditorController controller) : base(0, 0, 2, controller.GetGlyphHeight() * controller.Settings.PixelSize)
         {
             this.controller = controller;
             controller.OnCursorMoved += (e, p) =>
@@ -31,7 +31,7 @@ namespace SandboxCodeEditor.Widgets
 
         private void Update(Point point)
         {
-            Move(point.X, point.Y);
+            Move(point.X * controller.Settings.PixelSize, point.Y * controller.Settings.PixelSize);
         }
 
         public override void Update()

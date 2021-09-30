@@ -61,6 +61,11 @@ namespace SandboxCodeEditor
 
             context.ResetBuffers(controller.Settings.BackgroundColor.ToRGB());
 
+            foreach(var keyPair in text)
+            {
+                DrawGlyph(keyPair.Key, controller.Font.GetGlyph(keyPair.Value));
+            }
+
             for (int i = 0; i < world.Particles.Count; i++)
             {
                 Particle particle = world.Particles[i];
@@ -161,8 +166,11 @@ namespace SandboxCodeEditor
                         {
                             var glyph = controller.Font.GetGlyph(value);
 
-                            text.Add(controller.CursorePosition, value);
-                            CreateGlyph(glyph);
+                            if (glyph != null)
+                            {
+                                text.Add(controller.CursorePosition, value);
+                                CreateGlyph(glyph);
+                            }
                         }
                     }
                     break;
@@ -226,6 +234,34 @@ namespace SandboxCodeEditor
             }
 
             controller.Space();
+        }
+
+        private void DrawGlyph(Point point, SandboxGlyph glyph)
+        {
+            if (glyph == null)
+            {
+                return;
+            }
+
+            var position = controller.TextToScreenPosition(point);
+
+            for (int y = 0; y < glyph.Size; y++)
+            {
+                for (int x = 0; x < glyph.Size; x++)
+                {
+                    int i = x + y * glyph.Size;
+
+                    if (glyph.Data[i] > 0)
+                    {
+                        Point _point = new Point(position.X + x, position.Y + y) * controller.Settings.PixelSize;
+
+                        if (context.Rect.Contains(_point.X, _point.Y))
+                        {
+                            context.Buffer[_point.X + _point.Y * context.Rect.Width] = controller.Settings.PhantomColor.ToRGB();
+                        }
+                    }
+                }
+            }
         }
 
         private Particle CreateParticle(int x, int y)

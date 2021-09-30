@@ -1,6 +1,5 @@
 ﻿using SandboxCodeEditor.Math;
 using SandboxCodeEditor.Renderer;
-using System;
 
 namespace SandboxCodeEditor.Widgets
 {
