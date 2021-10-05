@@ -1,5 +1,5 @@
 ﻿
-namespace SandboxCodeEditor.Font
+namespace SandboxCodeEditor.Fonts
 {
     public class GlyphData
     {

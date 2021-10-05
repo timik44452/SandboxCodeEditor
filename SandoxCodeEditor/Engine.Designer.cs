@@ -39,10 +39,7 @@
             this.rendererBox.Name = "rendererBox";
             this.rendererBox.Size = new System.Drawing.Size(902, 1077);
             this.rendererBox.TabIndex = 0;
-            this.rendererBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.rendererBox_KeyDown);
-            this.rendererBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.rendererBox_MouseDown);
-            this.rendererBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.rendererBox_MouseMove);
-            this.rendererBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.rendererBox_MouseUp);
+            this.rendererBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.rendererBox_KeyPress);
             // 
             // Engine
             // 

@@ -59,8 +59,8 @@ namespace SandboxCodeEditor.Editor
             this.width = width;
             this.height = height;
 
-            glyphWidth = Font.GlyphSize + Settings.SpaceBetweenGlyps;
-            glyphHeight = Font.GlyphSize + Settings.SpaceBetweenLines;
+            glyphWidth = MathUtilities.Max(Font.Size + Settings.SpaceBetweenGlyps, 1);
+            glyphHeight = MathUtilities.Max(Font.Size + Settings.SpaceBetweenLines, 1);
             screenCharsWidth = width / GetGlyphWidth();
             screenCharsHeight = height / GetGlyphHeight();
         }

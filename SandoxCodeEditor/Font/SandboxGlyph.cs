@@ -2,29 +2,17 @@
 {
     public class SandboxGlyph
     {
-        public int Size { get; }
+        public int Width { get; }
+        public int Height { get; }
         public char Symbol { get; }
-        public byte[] Data { get; }
+        public byte[,] Data { get; }
 
-        public SandboxGlyph(int size, char symbol)
+        public SandboxGlyph(int widht, int height, char symbol)
         {
-            Data = new byte[size * size];
+            Data = new byte[widht, height];
             Symbol = symbol;
-            Size = size;
-        }
-
-        public SandboxGlyph(char symbol, byte[] data)
-        {
-            var size = System.Math.Sqrt(data.Length);
-
-            Size = (int)size;
-            Symbol = symbol;
-            Data = data;
-
-            if (Size != size)
-            {
-                throw new System.ArgumentException();
-            }
+            Width = widht;
+            Height = height;
         }
     }
 }

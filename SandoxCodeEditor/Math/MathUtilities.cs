@@ -2,11 +2,11 @@
 
 namespace SandboxCodeEditor.Math
 {
-    public static class Utilities
+    public static class MathUtilities
     {
         private static Random random;
 
-        static Utilities()
+        static MathUtilities()
         {
             random = new Random();
         }
@@ -14,6 +14,16 @@ namespace SandboxCodeEditor.Math
         public static float RandomValue()
         {
             return (float)random.NextDouble();
+        }
+
+        public static int Max(int valueA, int valueB)
+        {
+            return valueA > valueB ? valueA : valueB;
+        }
+
+        public static int Min(int valueA, int valueB)
+        {
+            return valueA < valueB ? valueA : valueB;
         }
 
         public static float Max(float valueA, float valueB)

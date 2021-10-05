@@ -22,7 +22,7 @@ namespace SandboxCodeEditor.Particles
 
         public BombParticle(int x, int y, float bombPower = 1F, float duration = 1F) : base(x, y)
         {
-            seed = Utilities.RandomValue();
+            seed = MathUtilities.RandomValue();
             power = bombPower;
             bombColor = new Pixel(250, 5, 5);
             flameAColor = new Pixel(255, 211, 3);
@@ -49,7 +49,7 @@ namespace SandboxCodeEditor.Particles
             }
             else
             {
-                float explosionTime = Utilities.Clamp((localTime - explosionTimeout) / explosionLifetime);
+                float explosionTime = MathUtilities.Clamp((localTime - explosionTimeout) / explosionLifetime);
 
                 Color = Pixel.Lerp(flameAColor, flameBColor, explosionTime);
 

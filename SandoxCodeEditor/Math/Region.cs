@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SandboxCodeEditor.Math
+﻿namespace SandboxCodeEditor.Math
 {
     public struct Region
     {
@@ -9,10 +7,10 @@ namespace SandboxCodeEditor.Math
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public int Right { get; set; }
-        public int Lefth { get; set; }
-        public int Top { get; set; }
-        public int Bottom { get; set; }
+        public int Right { get; }
+        public int Lefth { get; }
+        public int Top { get; }
+        public int Bottom { get; }
 
         public Region(int X, int Y, int Width, int Height)
         {

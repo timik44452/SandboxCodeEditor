@@ -64,7 +64,7 @@ namespace SandboxCodeEditor
                 int posX = charNumber * size % Resources.font.Width;
                 int posY = charNumber * size / Resources.font.Width * size + charNumber / 4;
 
-                SandboxGlyph glyph = new SandboxGlyph(size, charsOnImage[charNumber]);
+                SandboxGlyph glyph = new SandboxGlyph(size, size, charsOnImage[charNumber]);
 
                 for (int y = 0; y < size; y++)
                 {
@@ -74,7 +74,7 @@ namespace SandboxCodeEditor
 
                         if (pixel.R < 128)
                         {
-                            glyph.Data[x + y * size] = 1;
+                            glyph.Data[x, y] = 1;
                         }
                     }
                 }

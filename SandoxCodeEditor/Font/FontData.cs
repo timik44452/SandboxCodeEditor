@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SandboxCodeEditor.Font
+namespace SandboxCodeEditor.Fonts
 {
     public class FontData
     {

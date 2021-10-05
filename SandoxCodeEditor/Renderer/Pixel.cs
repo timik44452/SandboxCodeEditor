@@ -46,7 +46,7 @@ namespace SandboxCodeEditor.Renderer
 
         public static Pixel Lerp(Pixel from, Pixel to, float lerpTime)
         {
-            lerpTime = Utilities.Clamp(lerpTime);
+            lerpTime = MathUtilities.Clamp(lerpTime);
 
             from.R = (byte)(from.R + (to.R - from.R) * lerpTime);
             from.G = (byte)(from.G + (to.G - from.G) * lerpTime);

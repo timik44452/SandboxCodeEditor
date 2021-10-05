@@ -13,7 +13,7 @@ namespace SandboxCodeEditor.World
 
         public static void Simulate(float deltaTime)
         {
-            Time = Utilities.Repeate(Time + deltaTime, 60);
+            Time = MathUtilities.Repeate(Time + deltaTime, 60);
             Wind = new Vector2(0, 0);
         }
     }

@@ -31,7 +31,7 @@ namespace SandboxCodeEditor
 
         private void OnLoad(object sender, EventArgs e)
         {
-            var font = new SandboxFont("example");
+            var font = new SandboxFont("Winston");
 
             now = DateTime.Now;
             world = new GridWorld(Width, Height);
@@ -49,14 +49,15 @@ namespace SandboxCodeEditor
 
             widgets.Add(new ModeWidget(controller.Settings.Borders, Height - controller.GetGlyphHeight() - controller.Settings.Borders - 39, controller.GetGlyphWidth() * 3, controller.GetGlyphHeight(), controller));
             widgets.Add(new CursoreWidget(controller));
-            widgets.Add(new CodeLineWidget(Height, controller));
+            //widgets.Add(new CodeLineWidget(Height, controller));
 
             isInitialized = true;
         }
 
+
         private void OnUpdate(object sender, EventArgs e)
         {
-            float deltaTime = Utilities.Max((float)(DateTime.Now - now).TotalMilliseconds, 0.02F);
+            float deltaTime = MathUtilities.Max((float)(DateTime.Now - now).TotalMilliseconds, 0.02F);
             now = DateTime.Now;
 
             context.ResetBuffers(controller.Settings.BackgroundColor.ToRGB());
@@ -103,20 +104,6 @@ namespace SandboxCodeEditor
             Text = $"FPS:{1000 / deltaTime}";
         }
 
-        private void rendererBox_MouseDown(object sender, MouseEventArgs e)
-        {
-            var particle = new IronParticle(e.X, e.Y);
-            world.InstantiateParticle(particle);
-        }
-
-        private void rendererBox_MouseMove(object sender, MouseEventArgs e)
-        {
-        }
-
-        private void rendererBox_MouseUp(object sender, MouseEventArgs e)
-        {
-        }
-
         private void Engine_Resize(object sender, EventArgs e)
         {
             if (isInitialized)
@@ -128,29 +115,41 @@ namespace SandboxCodeEditor
             }
         }
 
-        private void rendererBox_KeyDown(object sender, KeyEventArgs e)
+        private void rendererBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            var charValue = char.ConvertFromUtf32(e.KeyValue)[0];
-
-            if (controller.EditorMode == Mode.Command)
+            if (controller.EditorMode == Mode.Text)
             {
-                CommandModeInputHandler(e.KeyCode, charValue);
-            }
-            else
-            {
-                TextModeInputHandler(e.KeyCode, charValue);
+                Write(e.KeyChar);
             }
         }
 
-        private void CommandModeInputHandler(Keys key, char value)
+        private void CommandModeInputHandler(Keys key)
         {
             switch (key)
             {
                 case Keys.T: controller.EditorMode = Mode.Text; break;
+                case Keys.V: Paste(); break;
             }
         }
 
-        private void TextModeInputHandler(Keys key, char value)
+        private void Paste()
+        {
+            var text = Clipboard.GetText().ToUpper();
+            var lines = text.Split(new[] { '\r', '\n' });
+
+            for (int line = 0; line < lines.Length; line++)
+            {
+                for (int charPosition = 0; charPosition < lines[line].Length; charPosition++)
+                {
+                    var currentChar = lines[line][charPosition];
+                    var currentPoint = new Point(charPosition, line) + controller.CursorePosition;
+
+                    Write(currentChar, currentPoint);
+                }
+            }
+        }
+
+        private void TextModeInputHandler(Keys key)
         {
             switch (key)
             {
@@ -159,21 +158,6 @@ namespace SandboxCodeEditor
                 case Keys.Enter: controller.Enter(); break;
                 case Keys.Back: Backspace(); break;
                 case Keys.Delete: Delete(); break;
-
-                default:
-                    {
-                        if (!text.ContainsKey(controller.CursorePosition))
-                        {
-                            var glyph = controller.Font.GetGlyph(value);
-
-                            if (glyph != null)
-                            {
-                                text.Add(controller.CursorePosition, value);
-                                CreateGlyph(glyph);
-                            }
-                        }
-                    }
-                    break;
             }
         }
 
@@ -207,7 +191,38 @@ namespace SandboxCodeEditor
                 case Keys.Right: controller.MoveCursore(1, 0); break;
             }
 
+            if (controller.EditorMode == Mode.Command)
+            {
+                CommandModeInputHandler(keyData);
+            }
+            else
+            {
+                TextModeInputHandler(keyData);
+            }
+
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void Write(char value)
+        {
+            Write(value, controller.CursorePosition);
+        }
+
+        private void Write(char value, Point point)
+        {
+            if (!text.ContainsKey(point))
+            {
+                type = (int)(4 * MathUtilities.RandomValue());
+                var glyph = controller.Font.GetGlyph(value);
+
+                if (glyph != null)
+                {
+                    text.Add(point, value);
+                    //CreateGlyph(glyph);
+
+                    controller.Space();
+                }
+            }
         }
 
         private void CreateGlyph(SandboxGlyph glyph)
@@ -219,21 +234,17 @@ namespace SandboxCodeEditor
 
             var position = controller.TextToScreenPosition(controller.CursorePosition);
 
-            for (int y = 0; y < glyph.Size; y++)
+            for (int y = 0; y < glyph.Height; y++)
             {
-                for (int x = 0; x < glyph.Size; x++)
+                for (int x = 0; x < glyph.Width; x++)
                 {
-                    int i = x + y * glyph.Size;
-
-                    if (glyph.Data[i] > 0)
+                    if (glyph.Data[x, y] > 0)
                     {
                         var particle = CreateParticle(position.X + x, position.Y + y);
                         world.InstantiateParticle(particle);
                     }
                 }
             }
-
-            controller.Space();
         }
 
         private void DrawGlyph(Point point, SandboxGlyph glyph)
@@ -243,15 +254,13 @@ namespace SandboxCodeEditor
                 return;
             }
 
-            var position = controller.TextToScreenPosition(point);
+            var position = point;// controller.TextToScreenPosition(point);
 
-            for (int y = 0; y < glyph.Size; y++)
+            for (int y = 0; y < glyph.Height; y++)
             {
-                for (int x = 0; x < glyph.Size; x++)
+                for (int x = 0; x < glyph.Width; x++)
                 {
-                    int i = x + y * glyph.Size;
-
-                    if (glyph.Data[i] > 0)
+                    if (glyph.Data[x, y] > 0)
                     {
                         Point _point = new Point(position.X + x, position.Y + y) * controller.Settings.PixelSize;
 

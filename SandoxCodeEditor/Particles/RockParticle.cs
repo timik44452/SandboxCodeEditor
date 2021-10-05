@@ -9,7 +9,7 @@ namespace SandboxCodeEditor.Particles
 
         public RockParticle(int x, int y) : base(x, y)
         {
-            seed = Utilities.RandomValue();
+            seed = MathUtilities.RandomValue();
             Color = new SandboxCodeEditor.Renderer.Pixel(123, 138, 145);
         }
 

@@ -19,7 +19,7 @@ namespace SandboxCodeEditor.Particles
 
         public IronParticle(int x, int y) : base(x, y)
         {
-            seed = Utilities.RandomValue();
+            seed = MathUtilities.RandomValue();
             metalColor = new Pixel(127, 138, 144);
             rustColor = new Pixel(160, 110, 120);
             bornTime = DateTime.Now;

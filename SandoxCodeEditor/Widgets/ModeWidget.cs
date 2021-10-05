@@ -49,13 +49,11 @@ namespace SandboxCodeEditor.Widgets
 
             int offset = index * controller.GetGlyphWidth();
 
-            for (int y = 0; y < glyph.Size; y++)
+            for (int y = 0; y < glyph.Height; y++)
             {
-                for (int x = 0; x < glyph.Size; x++)
+                for (int x = 0; x < glyph.Width; x++)
                 {
-                    int i = x + y * glyph.Size;
-
-                    if (glyph.Data[i] > 0)
+                    if (glyph.Data[x, y] > 0)
                     {
                         for (int _x = 0; _x < controller.Settings.PixelSize; _x++)
                             for (int _y = 0; _y < controller.Settings.PixelSize; _y++)

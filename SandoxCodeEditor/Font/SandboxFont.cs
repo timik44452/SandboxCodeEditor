@@ -1,18 +1,19 @@
-﻿using Newtonsoft.Json;
-using SandboxCodeEditor.Font;
+﻿using SandboxCodeEditor.Fonts;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace SandboxCodeEditor
 {
     public class SandboxFont
     {
-        public int GlyphSize { get; }
+        public int Size { get; }
         public string Name { get; }
 
         private Dictionary<char, SandboxGlyph> glyphs;
+
+        private const string FontsDrectory = @"Fonts";
 
         public SandboxFont(string fontName)
         {
@@ -34,7 +35,7 @@ namespace SandboxCodeEditor
 
             if (glyphs.Values.Count > 0)
             {
-                GlyphSize = glyphs.Values.First().Size;
+                Size = glyphs.Values.First().Height;
             }
         }
 
@@ -47,82 +48,52 @@ namespace SandboxCodeEditor
 
         private void LoadGlyphs(string fontName)
         {
-            FontData data = new FontData()
-            {
-                GlyphSize = 32
-            };
-
-            data.glyphs.Add(new GlyphData()
-            {
-                Symbol = 'A',
-                X = 21,
-                Y = 25
-            });
-
-            data.glyphs.Add(new GlyphData()
-            {
-                Symbol = 'B',
-                X = 93,
-                Y = 25
-            });
-
-            data.glyphs.Add(new GlyphData()
-            {
-                Symbol = 'B',
-                X = 168,
-                Y = 25
-            });
-
             //TODO: Add conts
-            if (!Directory.Exists(@"Fonts"))
+            if (!Directory.Exists(FontsDrectory))
             {
-                Directory.CreateDirectory(@"Fonts");
+                Directory.CreateDirectory(FontsDrectory);
             }
 
-            if (File.Exists(GetMetaPath(fontName)) && File.Exists(GetFontImagePath(fontName)))
+            LoadTTF(fontName);
+        }
+
+        private void LoadTTF(string fontName)
+        {
+            var path = GetFontPath(fontName);
+
+            if (File.Exists(path))
             {
-                var fontData = new FontData();
-                var image = new Bitmap(GetFontImagePath(fontName));
+                string nullLoaded = string.Empty;
 
-                using (var reader = new StreamReader(GetMetaPath(fontName)))
+                using(var loader = new FontLoader(path))
                 {
-                    using (var jsonreader = new JsonTextReader(reader))
-                    {
-                        var serializer = JsonSerializer.Create();
-                        fontData = serializer.Deserialize<FontData>(jsonreader);
-                    }
-                }
+                    var chars = Enumerable.Range(0, 256)
+                      .Select(i => (char)i)
+                      .Where(c => !char.IsControl(c));
 
-                foreach (var glyph in fontData.glyphs)
-                {
-                    SandboxGlyph sandboxGlyph = new SandboxGlyph(fontData.GlyphSize, glyph.Symbol);
-
-                    for (int y = 0; y < sandboxGlyph.Size; y++)
+                    foreach (var _char in chars)
                     {
-                        for (int x = 0; x < sandboxGlyph.Size; x++)
+                        var glyph = loader.GetGlyph(_char);
+
+                        if (glyph == null)
                         {
-                            var pixel = image.GetPixel(x + glyph.X, y + glyph.Y);
-
-                            if (pixel.R < 128)
-                            {
-                                sandboxGlyph.Data[x + y * sandboxGlyph.Size] = 1;
-                            }
+                            nullLoaded += $"{glyph}\n";
+                        }
+                        else
+                        {
+                            glyphs.Add(_char, glyph);
                         }
                     }
 
-                    glyphs.Add(glyph.Symbol, sandboxGlyph);
+                    MessageBox.Show(nullLoaded);
                 }
             }
         }
+        
 
-        private string GetMetaPath(string fontName)
+        private string GetFontPath(string fontName)
         {
-            return $"Fonts/{fontName}.json";
-        }
-
-        private string GetFontImagePath(string fontName)
-        {
-            return $"Fonts/{fontName}.jpg";
+            return $"{FontsDrectory}/{fontName}.ttf";
         }
     }
 }

@@ -58,6 +58,7 @@
       <DependentUpon>Engine.cs</DependentUpon>
     </Compile>
     <Compile Include="Font\FontData.cs" />
+    <Compile Include="Font\FontLoader.cs" />
     <Compile Include="Font\GlyphData.cs" />
     <Compile Include="Font\GlyphExamples.cs" />
     <Compile Include="Font\SandboxFont.cs" />
@@ -67,7 +68,7 @@
     <Compile Include="GDI\GDIHelper.cs" />
     <Compile Include="Math\Point.cs" />
     <Compile Include="Math\Region.cs" />
-    <Compile Include="Math\Utilities.cs" />
+    <Compile Include="Math\MathUtilities.cs" />
     <Compile Include="Math\Vector2.cs" />
     <Compile Include="Particles\BombParticle.cs" />
     <Compile Include="Particles\IronParticle.cs" />
